@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GymWeb", "GymWeb\GymWeb.csproj", "{AAB7453A-F5A1-4C30-9B2F-B9A280E42621}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GymAPI", "GymAPI\GymAPI.csproj", "{F488C963-6973-4046-9866-C0743A1BFCC0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{D981CCE8-85AD-4CD4-81EE-24AE8F60EF7B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AAB7453A-F5A1-4C30-9B2F-B9A280E42621}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AAB7453A-F5A1-4C30-9B2F-B9A280E42621}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AAB7453A-F5A1-4C30-9B2F-B9A280E42621}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AAB7453A-F5A1-4C30-9B2F-B9A280E42621}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F488C963-6973-4046-9866-C0743A1BFCC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F488C963-6973-4046-9866-C0743A1BFCC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F488C963-6973-4046-9866-C0743A1BFCC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F488C963-6973-4046-9866-C0743A1BFCC0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D981CCE8-85AD-4CD4-81EE-24AE8F60EF7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D981CCE8-85AD-4CD4-81EE-24AE8F60EF7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D981CCE8-85AD-4CD4-81EE-24AE8F60EF7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D981CCE8-85AD-4CD4-81EE-24AE8F60EF7B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
