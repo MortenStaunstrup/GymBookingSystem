@@ -13,6 +13,10 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="wwwroot\Pictures\" />
+    </ItemGroup>
+
+    <ItemGroup>
       <ProjectReference Include="..\Core\Core.csproj" />
     </ItemGroup>
 
