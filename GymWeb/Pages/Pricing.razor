@@ -1,7 +1,135 @@
 @page "/pricing"
+@using Core
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject NavigationManager NavMan
 <PageTitle>Plans</PageTitle>
-<h3>Pricing</h3>
+
+<div class="container-fluid">
+	<table>
+
+		<colgroup></colgroup>
+		<colgroup></colgroup>
+		<colgroup></colgroup>
+		<colgroup></colgroup>
+
+		<thead>
+		<tr>
+			<th>&nbsp;</th>
+			<th>
+				<h2>Basic</h2>
+				<p>$ 19.95*</p>
+			</th>
+			<th>
+				<h2>Plus</h2>
+				<p>$ 49.95*</p>
+				<p class="promo">Our most valuable package!</p>
+			</th>
+			<th>
+				<h2>Premium</h2>
+				<p>$ 89.95*</p>
+			</th>
+		</tr>
+		</thead>
+
+		<tfoot>
+		<tr>
+			<th>&nbsp;</th>
+			<td><a @onclick="AssignUserBasicPlan">Get Subscription</a></td>
+			<td><a @onclick="AssignUserPlusPlan">Get Subscription</a></td>
+			<td><a @onclick="AssignUserPremiumPlan">Get Subscription</a></td>
+		</tr>
+		</tfoot>
+
+		<tbody>
+		<tr>
+			<th>Gym access<span>Access to the whole gym, alle machines, free weights and performance room</span></th>
+			<td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+				<path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/>
+			</svg></td>
+			<td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+				<path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/>
+			</svg></td>
+			<td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+				<path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/>
+			</svg></td>
+		</tr>
+		<tr>
+			<th>Guaranteed GAINS<span>100% guaranteed gains swoleness, amazing bicep peak, horse cockin' weights</span></th>
+			<td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+				<path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/>
+			</svg></td>
+			<td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+				<path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/>
+			</svg></td>
+			<td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+				<path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/>
+			</svg></td>
+		</tr>
+		<tr>
+			<th>1 FREE protein snack from the bar<span>Every day you get 1 free protein snack from behind the bar. Choose between protein bars, protein shakes and other cool stuff every week</span></th>
+			<td>-</td>
+			<td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+				<path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/>
+			</svg></td>
+			<td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+				<path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/>
+			</svg></td>
+		</tr>
+		<tr>
+			<th>Access to the 'Gains, Horse Cockin' weights around' sauna<span>Free access to the sauna at all operating hours with staff present: 08:00 - 14:00</span></th>
+			<td>-</td>
+			<td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+				<path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/>
+			</svg></td>
+			<td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+				<path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/>
+			</svg></td>
+		</tr>
+		<tr>
+			<th>1 FREE personal trainer session<span>You get 1 free personal trainer session every week. Schedule it with the workers at the front desk</span></th>
+			<td>-</td>
+			<td>-</td>
+			<td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+				<path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/>
+			</svg></td>
+		</tr>
+		<tr>
+			<th>Bring a friend for FREE<span>Bring a friend along 1 time every week. Can't keep the gains to yourself, share them with a friend!!</span></th>
+			<td>-</td>
+			<td>-</td>
+			<td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+				<path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/>
+			</svg></td>
+		</tr>
+		</tbody>
+	</table>
+	<p>*prices are per month</p>
+</div>
 
 @code {
-    
+	User? _currentUser;
+
+	protected override async Task OnInitializedAsync()
+	{
+		_currentUser = await LocalStorage.GetItemAsync<User>("user");
+	}
+	
+	private void AssignUserBasicPlan()
+	{
+		if(_currentUser == null)
+			NavMan.NavigateTo("/login/1");
+	}
+	
+	private void AssignUserPlusPlan()
+	{
+		if(_currentUser == null)
+			NavMan.NavigateTo("/login/2");
+	}
+	
+	private void AssignUserPremiumPlan()
+	{
+		if(_currentUser == null)
+			NavMan.NavigateTo("/login/3");
+	}
+
 }

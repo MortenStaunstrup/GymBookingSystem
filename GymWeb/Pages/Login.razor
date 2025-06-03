@@ -1,7 +1,109 @@
-@page "/Login"
+@page "/login"
+@page "/login/{pricingPlan:int}"
+@using System.Net
+@using Core
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject NavigationManager NavMan
+@inject HttpClient Client
 <PageTitle>Login</PageTitle>
-<h3>Login</h3>
+
+<section class="vh-100 gradient-custom">
+    <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+                <div class="card bg-dark text-white" style="border-radius: 1rem;">
+                    <div class="card-body p-3 text-center">
+
+                        <div class="mb mt-md-4 pb-5">
+                            
+                            @if (error)
+                            {
+                                <div class="alert alert-danger" role="alert">
+                                    @errorText
+                                </div>
+                            }
+                            
+                            <h2 class="fw-bold mb-2 text-uppercase">Login</h2>
+                            <p class="text-white-50 mb-5">Please enter your login and password!</p>
+
+                            <div data-mdb-input-init class="form-outline form-white mb-4">
+                                <InputText style="width: 100%" type="email" id="typeEmailX" class="form-control-lg" @bind-Value="email"/>
+                                <label class="form-label" for="typeEmailX">Email</label>
+                            </div>
+
+                            <div data-mdb-input-init class="form-outline form-white mb-4">
+                                <InputText style="width: 100%" type="password" id="typePasswordX" class="form-control-lg" @bind-Value="password"/>
+                                <label class="form-label" for="typePasswordX">Password</label>
+                            </div>
+
+                            <p class="small mb-5 pb-lg-2"><a class="text-white-50" href="#!">Forgot password?</a></p>
+
+                            <button data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-light btn-lg px-5" type="submit" @onclick="TryLogin">Login</button>
+
+                        </div>
+
+                        <div>
+                            <p class="mb-0">Don't have an account? <a href="/register" class="text-white-50 fw-bold">Sign Up</a>
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
 @code {
-    
+    User? _currentUser;
+    [Parameter] public int pricingPlan { get; set; }
+    string email = "";
+    string password = "";
+
+    bool error;
+    string errorText;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _currentUser = await LocalStorage.GetItemAsync<User>("user");
+        if(_currentUser != null)
+            NavMan.NavigateTo("/");
+    }
+
+    private async Task TryLogin()
+    {
+        if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+        {
+            await ThrowError("Email and password must not be empty");
+            return;
+        }
+        
+        var response = await Client.GetAsync($"/users/login/{email}/{password}");
+        if (response.StatusCode == HttpStatusCode.NotFound)
+        {
+            await ThrowError("Email or password is wrong");
+            return;
+        }
+        if (response.StatusCode == HttpStatusCode.OK)
+        {
+            await LocalStorage.SetItemAsync("user", response.Content);
+            if (pricingPlan != 0)
+            {
+                NavMan.NavigateTo("/"); //Todo skal navigere til den plan man prøvede at købe
+            }
+            NavMan.NavigateTo("/");
+        }
+    }
+
+    private async Task ThrowError(string errorText)
+    {
+        this.errorText = errorText;
+        error = true;
+        StateHasChanged();
+        await Task.Delay(3000);
+        error = false;
+        this.errorText = "";
+        StateHasChanged();
+    }
+
 }

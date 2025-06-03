@@ -1,7 +1,121 @@
 @page "/Register"
+@using System.Net
+@using Core
+@inject HttpClient Client
+@inject NavigationManager NavMan
 <PageTitle>Registration</PageTitle>
-<h3>Register</h3>
 
+<section class="vh-100 gradient-custom">
+    <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+                <div class="card bg-dark text-white" style="border-radius: 1rem;">
+                    <div class="card-body p-3 text-center">
+                        
+                        <div class="mb mt-md-4 pb-5">
+                            <h2 class="fw-bold mb-2 text-uppercase">Register account</h2>
+                            <EditForm EditContext="EditContext" FormName="User Form" class="row p-3" OnSubmit="HandleSubmit">
+                                <DataAnnotationsValidator></DataAnnotationsValidator>
+                                <ValidationSummary></ValidationSummary>
+                            
+                                    @if (serverError)
+                                    {
+                                        <div class="alert alert-danger">
+                                            Oops, something went wrong, try again later
+                                        </div>
+                                    }
+                                    <div class="col-md-12 mb-3">
+                                        <label for="name">Full name</label>
+                                        <InputText id="name" placeholder="Full name" class="form-control" @bind-Value="_model.FullName"></InputText>
+                                    </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="password">Password</label>
+                                    <InputText id="password" type="password" placeholder="Password" class="form-control" @bind-Value="_model.Password"></InputText>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="confirm">Confirm password</label>
+                                    <InputText id="confirm" type="password" placeholder="Confirm password" class="form-control" @bind-Value="confirmPassword"></InputText>
+                                </div>
+                                    @if (confirmPasswordError)
+                                    {
+                                        <p style="color: red">@errorMessage</p>
+                                    }
+
+                                <div class="col-md-12 mb-3">
+                                    <label for="Email">Email</label>
+                                    <InputText id="Email" placeholder="Email Address" class="form-control" @bind-Value="_model.Email"></InputText>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="number">Phone number</label>
+                                    <InputText type="number" id="number" class="form-control" @bind-Value="_model.PhoneNumber"></InputText>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="age">Age</label>
+                                    <InputNumber TValue="int" id="age" class="form-control" @bind-Value="_model.Age"></InputNumber>
+                                </div>
+                                
+                                <div class="col-md-12 mb-3">
+                                    <button type="submit" class="btn btn-primary">Create account</button>
+                                </div>
+                            </EditForm>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 @code {
+    User _model;
+    string confirmPassword;
+    EditContext EditContext;
+
+    bool confirmPasswordError;
+    bool serverError;
+
+    string errorMessage;
     
+    protected override void OnInitialized()
+    {
+        _model = new User();
+        EditContext = new EditContext(_model);
+    }
+
+    private async Task HandleSubmit()
+    {
+        _model.Role = "User";
+        if (_model.Password != confirmPassword)
+        {
+            confirmPasswordError = true;
+            errorMessage = "Passwords do not match";
+            StateHasChanged();
+            return;
+        }
+        else
+        {
+            confirmPasswordError = false;
+            errorMessage = "";
+            StateHasChanged();
+        }
+        if (EditContext.Validate())
+        {
+            var result = await Client.PostAsJsonAsync($"/users/register", _model);
+            if (result.IsSuccessStatusCode)
+            {
+                NavMan.NavigateTo("/login");
+            }
+
+            if (result.StatusCode == HttpStatusCode.NotFound)
+            {
+                serverError = true;
+                StateHasChanged();
+            }
+        }
+        
+    }
 }

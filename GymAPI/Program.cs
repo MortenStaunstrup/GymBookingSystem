@@ -1,4 +1,6 @@
 using DotNetEnv;
+using GymAPI.Repositories;
+using GymAPI.Repositories.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +11,8 @@ Env.Load();
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+builder.Services.AddSingleton<IUserRepository, UserRepositoryMongoDb>();
 
 builder.Services.AddCors(options =>
 {
