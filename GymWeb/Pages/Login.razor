@@ -1,5 +1,5 @@
 @page "/login"
-@page "/login/{pricingPlan:int}"
+@page "/login/{fromPricingPlans:bool}"
 @using System.Net
 @using Core
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
@@ -20,6 +20,13 @@
                             {
                                 <div class="alert alert-danger" role="alert">
                                     @errorText
+                                </div>
+                            }
+                            
+                            @if (success)
+                            {
+                                <div class="alert alert-success" role="alert">
+                                    @successText
                                 </div>
                             }
                             
@@ -56,12 +63,15 @@
 
 @code {
     User? _currentUser;
-    [Parameter] public int pricingPlan { get; set; }
+    [Parameter] public bool fromPricingPlans { get; set; }
     string email = "";
     string password = "";
 
     bool error;
     string errorText;
+
+    bool success;
+    string successText;
 
     protected override async Task OnInitializedAsync()
     {
@@ -78,20 +88,23 @@
             return;
         }
         
-        var response = await Client.GetAsync($"/users/login/{email}/{password}");
-        if (response.StatusCode == HttpStatusCode.NotFound)
+        var response = await Client.GetAsync($"users/login/{email}/{password}");
+        if (response.StatusCode == HttpStatusCode.BadRequest)
         {
             await ThrowError("Email or password is wrong");
             return;
         }
         if (response.StatusCode == HttpStatusCode.OK)
         {
-            await LocalStorage.SetItemAsync("user", response.Content);
-            if (pricingPlan != 0)
+            successText = "Logged in successfully!";
+            success = true;
+            var user = await response.Content.ReadFromJsonAsync<User>();
+            await LocalStorage.SetItemAsync("user", user);
+            if (fromPricingPlans)
             {
-                NavMan.NavigateTo("/"); //Todo skal navigere til den plan man prøvede at købe
+                NavMan.NavigateTo("/pricing", true);
             }
-            NavMan.NavigateTo("/");
+            NavMan.NavigateTo("/", true);
         }
     }
 

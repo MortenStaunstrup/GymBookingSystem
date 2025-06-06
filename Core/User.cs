@@ -1,9 +1,14 @@
 using System.ComponentModel.DataAnnotations;
+using MongoDB.Bson.Serialization.Attributes;
+
 
 namespace Core;
 
 public class User
 {
+    [Required]
+    [BsonId]
+    public int UserId { get; set; }
     [Required]
     public string Role { get; set; }
     [Required]
@@ -20,6 +25,7 @@ public class User
     [Required]
     [RequiredAge]
     public int Age { get; set; }
+    public MemberShip? MemberShip { get; set; }
 }
 
 public class RequiredAge : ValidationAttribute

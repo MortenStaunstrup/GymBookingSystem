@@ -1,7 +1,70 @@
 @page "/Profile"
+@using Core
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject NavigationManager NavMan
 <PageTitle>My Profile</PageTitle>
-<h3>Profile</h3>
+@if (_currentUser != null)
+{
+    <section class="vh-100 gradient-custom">
+        <div class="container py-5 h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+                    <div class="card bg-dark text-white" style="border-radius: 1rem;">
+                        <div class="card-body p-3 text-center">
+                            
+                            <div class="mb mt-md-4 pb-5">
+                                <h2 class="fw-bold mb-2 text-uppercase">My Account</h2>
+                                
+                                <div>
+                                    <span><b>Full Name</b></span>
+                                    <p>@_currentUser.FullName</p>
+                                </div>
+                                
+                                <div>
+                                    <span><b>Email</b></span>
+                                    <p>@_currentUser.Email</p>
+                                </div>
+                                
+                                <div>
+                                    <span><b>Phone Number</b></span>
+                                    <p>@_currentUser.PhoneNumber</p>
+                                </div>
+                                
+                                <div>
+                                    <span><b>Age</b></span>
+                                    <p>@_currentUser.Age</p>
+                                </div>
+                                
+                                <button class="btn btn-primary" @onclick="UpdateAccount">Update Account</button>
+                                <button class="btn btn-danger" @onclick="DeleteAccount">Delete Account</button>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+}
 
 @code {
-    
+    User? _currentUser;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _currentUser = await LocalStorage.GetItemAsync<User>("user");
+        if(_currentUser == null)
+            NavMan.NavigateTo("/");
+    }
+
+    private void DeleteAccount()
+    {
+        
+    }
+
+    private void UpdateAccount()
+    {
+        
+    }
+
 }

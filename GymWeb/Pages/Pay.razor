@@ -1,6 +1,38 @@
 @page "/Pay{plan:int}"
+@using Core
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject NavigationManager NavMan
 
+<div class="container-fluid">
+    
+</div>
 
 @code {
-    [Parameter] public int plan { get; set; }
+    [Parameter] public int? plan { get; set; }
+    User? _currentUser;
+    
+
+    protected override async Task OnInitializedAsync()
+    {
+        _currentUser = await LocalStorage.GetItemAsync<User>("user");
+        if (_currentUser == null)
+        {
+            NavMan.NavigateTo("/");
+        }
+
+        if (plan == null)
+        {
+            Console.WriteLine("No plan selected, redirecting to home page");
+            NavMan.NavigateTo("/");
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (plan != 1 || plan != 2 || plan != 3)
+        {
+            NavMan.NavigateTo("/");
+        }
+    }
+
 }

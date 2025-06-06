@@ -1,0 +1,102 @@
+@page "/AddPlan"
+@using System.Net
+@using Core
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject NavigationManager NavMan
+@inject HttpClient Client
+@if (loaded)
+{
+    <div class="container-fluid">
+        @if (error)
+        {
+            <div class="alert alert-danger" role="alert">
+                Oops something went wrong, try again later
+            </div>
+        } else if (success)
+        {
+            <div class="alert alert-success" role="alert">
+                Membership plan successfully added!
+            </div>
+        }
+        <EditForm EditContext="EditContext" FormName="MemberShip form" class="form-control" OnSubmit="HandleSubmit">
+            <DataAnnotationsValidator></DataAnnotationsValidator>
+            <ValidationSummary></ValidationSummary>
+            <div class="col-md-6">
+                <label class="form-label">New membership name</label>
+                <InputText class="form-control" @bind-Value="_model.Name"></InputText>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Price per month (in dollars)</label>
+                <InputNumber TValue="double" class="form-control" @bind-Value="_model.PricePrMonth"></InputNumber>
+            </div>
+
+            <div class="col-md-6">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+
+        </EditForm>
+    </div>
+}
+
+@code {
+    User? _currentUser;
+    MemberShip _model;
+    EditContext EditContext;
+    int maxId;
+
+    bool loaded;
+
+    bool error;
+    bool success;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _currentUser = await LocalStorage.GetItemAsync<User>("user");
+        if (_currentUser == null || _currentUser.Role != "Admin")
+            NavMan.NavigateTo("/");
+
+        maxId = await Client.GetFromJsonAsync<int>("memberships/maxid");
+        _model = new MemberShip();
+        EditContext = new EditContext(_model);
+        loaded = true;
+    }
+
+    private async void HandleSubmit()
+    {
+        _model.MemberShipId = maxId + 1;
+        if (EditContext.Validate())
+        {
+            var result = await Client.PostAsJsonAsync("memberships/add", _model);
+
+            if (result.IsSuccessStatusCode)
+            {
+                success = true;
+                ResetModels();
+                StateHasChanged();
+                await Task.Delay(3000);
+                success = false;
+                StateHasChanged();
+            }
+
+            if (result.StatusCode == HttpStatusCode.Conflict)
+            {
+                error = true;
+                StateHasChanged();
+                await Task.Delay(3000);
+                error = false;
+                StateHasChanged();
+            }
+            
+        }
+    }
+
+    private async void ResetModels()
+    {
+        _model = new MemberShip();
+        EditContext = new EditContext(_model);
+        StateHasChanged();
+        maxId = await Client.GetFromJsonAsync<int>("memberships/maxid");
+    }
+
+}

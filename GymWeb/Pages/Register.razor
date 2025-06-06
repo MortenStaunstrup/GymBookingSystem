@@ -18,10 +18,10 @@
                                 <DataAnnotationsValidator></DataAnnotationsValidator>
                                 <ValidationSummary></ValidationSummary>
                             
-                                    @if (serverError)
+                                    @if (formError)
                                     {
                                         <div class="alert alert-danger">
-                                            Oops, something went wrong, try again later
+                                            @formErrorMessage
                                         </div>
                                     }
                                     <div class="col-md-12 mb-3">
@@ -36,7 +36,7 @@
 
                                 <div class="col-md-6 mb-3">
                                     <label for="confirm">Confirm password</label>
-                                    <InputText id="confirm" type="password" placeholder="Confirm password" class="form-control" @bind-Value="confirmPassword"></InputText>
+                                    <InputText id="confirm" type="password" placeholder="Confirm password" class="form-control" @onfocusout="CheckConfirmPassword" @bind-Value="confirmPassword"></InputText>
                                 </div>
                                     @if (confirmPasswordError)
                                     {
@@ -45,12 +45,12 @@
 
                                 <div class="col-md-12 mb-3">
                                     <label for="Email">Email</label>
-                                    <InputText id="Email" placeholder="Email Address" class="form-control" @bind-Value="_model.Email"></InputText>
+                                    <InputText id="Email" placeholder="Email address" class="form-control" @bind-Value="_model.Email"></InputText>
                                 </div>
 
                                 <div class="col-md-6 mb-3">
                                     <label for="number">Phone number</label>
-                                    <InputText type="number" id="number" class="form-control" @bind-Value="_model.PhoneNumber"></InputText>
+                                    <InputText type="number" id="number" class="form-control" placeholder="Phone number" @bind-Value="_model.PhoneNumber"></InputText>
                                 </div>
 
                                 <div class="col-md-6 mb-3">
@@ -74,21 +74,41 @@
     User _model;
     string confirmPassword;
     EditContext EditContext;
+    int userIdMax;
 
     bool confirmPasswordError;
-    bool serverError;
-
     string errorMessage;
+
+    bool formError;
+    string formErrorMessage;
     
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         _model = new User();
         EditContext = new EditContext(_model);
+        userIdMax = await Client.GetFromJsonAsync<int>("users/maxid");
+    }
+
+    private void CheckConfirmPassword()
+    {
+        if (confirmPassword != _model.Password)
+        {
+            confirmPasswordError = true;
+            errorMessage = "Passwords do not match";
+            StateHasChanged();
+        }
+        else
+        {
+            confirmPasswordError = false;
+            errorMessage = "";
+            StateHasChanged();
+        }
     }
 
     private async Task HandleSubmit()
     {
         _model.Role = "User";
+        _model.UserId = userIdMax + 1;
         if (_model.Password != confirmPassword)
         {
             confirmPasswordError = true;
@@ -104,15 +124,23 @@
         }
         if (EditContext.Validate())
         {
-            var result = await Client.PostAsJsonAsync($"/users/register", _model);
+            var result = await Client.PostAsJsonAsync($"users/register", _model);
             if (result.IsSuccessStatusCode)
             {
                 NavMan.NavigateTo("/login");
             }
 
-            if (result.StatusCode == HttpStatusCode.NotFound)
+            if (result.StatusCode == HttpStatusCode.BadRequest)
             {
-                serverError = true;
+                formErrorMessage = "User with current email already exists";
+                formError = true;
+                StateHasChanged();
+            }
+
+            if (result.StatusCode == HttpStatusCode.Conflict)
+            {
+                formErrorMessage = "Oops something went wrong, try again later";
+                formError = true;
                 StateHasChanged();
             }
         }

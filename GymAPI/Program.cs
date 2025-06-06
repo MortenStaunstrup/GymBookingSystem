@@ -13,6 +13,7 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 builder.Services.AddSingleton<IUserRepository, UserRepositoryMongoDb>();
+builder.Services.AddSingleton<IMemberShipRepository, MemberShipRepositoryMongoDb>();
 
 builder.Services.AddCors(options =>
 {

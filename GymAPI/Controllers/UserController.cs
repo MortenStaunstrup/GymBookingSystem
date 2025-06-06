@@ -22,7 +22,7 @@ public class UserController : ControllerBase
     {
         var result = await _userRepository.TryLoginAsync(email, password);
         if (result == null)
-            return NoContent();
+            return BadRequest();
         result.Password = "Placeholder";
         return Ok(result);
     }
@@ -31,13 +31,26 @@ public class UserController : ControllerBase
     [Route("register")]
     public async Task<IActionResult> Register(User user)
     {
+        Console.WriteLine($"Registering new user: {user.Email} controller");
         var result = await _userRepository.RegisterAsync(user);
-        if (!result)
+        if (result == 2)
+        {
+            return Created();
+        } 
+        if (result == 1)
         {
             return BadRequest();
         }
+        
+        return Conflict();
+        
+    }
 
-        return Ok(true);
+    [HttpGet]
+    [Route("maxid")]
+    public async Task<int> MaxId()
+    {
+        return await _userRepository.GetMaxId();
     }
     
     

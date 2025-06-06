@@ -117,19 +117,22 @@
 	private void AssignUserBasicPlan()
 	{
 		if(_currentUser == null)
-			NavMan.NavigateTo("/login/1");
+			NavMan.NavigateTo("/login/true");
+		NavMan.NavigateTo("/pay/1");
 	}
 	
 	private void AssignUserPlusPlan()
 	{
 		if(_currentUser == null)
-			NavMan.NavigateTo("/login/2");
+			NavMan.NavigateTo("/login/true");
+		NavMan.NavigateTo("/pay/2");
 	}
 	
 	private void AssignUserPremiumPlan()
 	{
 		if(_currentUser == null)
-			NavMan.NavigateTo("/login/3");
+			NavMan.NavigateTo("/login/true");
+		NavMan.NavigateTo("/pay/3");
 	}
 
 }

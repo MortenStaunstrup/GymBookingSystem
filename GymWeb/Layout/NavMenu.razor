@@ -40,6 +40,14 @@
                         </svg> Contact us
                     </NavLink>
                 </li>
+                @if (_currentUser?.Role == "Admin")
+                {
+                    <li class="nav-item">
+                        <NavLink class="nav-link" href="addplan">
+                            <span></span>Create New Membership plan (Admin)
+                        </NavLink>
+                    </li>
+                }
                 </div>
                 <div class="profileNavs">
                     @if (_currentUser == null)

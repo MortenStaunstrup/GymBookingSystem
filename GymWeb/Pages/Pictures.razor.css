@@ -1,0 +1,18 @@
+.pictureContainer{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.picture{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    width: 50%;
+    height: 300px;
+    img{
+        object-fit: fill;
+        height: 100%;
+    }
+}

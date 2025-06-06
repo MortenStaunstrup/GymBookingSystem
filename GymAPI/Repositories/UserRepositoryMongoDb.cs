@@ -28,9 +28,40 @@ public class UserRepositoryMongoDb : IUserRepository
         return await _userCollection.Find(userFilter).FirstOrDefaultAsync();
     }
 
-    public async Task<bool> RegisterAsync(User user)
+    public async Task<int> RegisterAsync(User user)
     {
-        return false;
+        var filter = Builders<User>.Filter.Eq("Email", user.Email);
+        var existingUser =  await _userCollection.Find(filter).FirstOrDefaultAsync();
+
+        if (existingUser != null)
+        {
+            Console.WriteLine($"User with email {user.Email} already exists!");
+            return 1; // user already exists
+        }
+
+        try
+        {
+            await _userCollection.InsertOneAsync(user);
+            Console.WriteLine($"User {user.UserId} {user.Email} created");
+            return 2; // user created
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"Error occured: {e.Message}");
+            return 3; // server error
+        }
+        
+    }
+
+    public async Task<int> GetMaxId()
+    {
+        var filter = Builders<User>.Filter.Empty;
+        var sort = Builders<User>.Sort.Descending(x => x.UserId);
+        var result = await _userCollection.Find(filter).Sort(sort).FirstOrDefaultAsync();
+
+        if (result == null)
+            return 0;
+        return result.UserId;
     }
     
 
